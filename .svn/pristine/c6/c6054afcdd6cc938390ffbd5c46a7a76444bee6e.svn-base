@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaon.mapper.BoardMapper">
+
+	<sql id="boardColumns">
+		  BNO
+		, TITLE
+		, CONTENT
+		, WRITER
+		, TO_CHAR(REGDATE, 'YYYY-MM-DD HH:MI:SS') as REGDATE
+		, VIEWCNT
+		, DELETE_YN
+	</sql>
+	
+	<select id="selectBoardList" resultType="BoardVO">
+			SELECT 
+				<include refid="boardColumns" />
+			FROM BOARD
+			WHERE DELETE_YN = 'N'
+			ORDER BY BNO
+	</select>
+	
+	<select id="selectBoardDetail" parameterType="long" resultType="BoardVO">
+		SELECT 
+			<include refid="boardColumns" />
+		FROM
+			BOARD
+		WHERE
+			DELETE_YN = 'N'
+		AND	BNO = #{bno}
+	</select>
+	
+	<insert id="registerBoard" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="bno">
+		INSERT INTO BOARD (
+			TITLE
+			, CONTENT
+			, WRITER
+			, REGDATE
+			, VIEWCNT
+			, DELETE_YN
+		) VALUES (
+			#{title}
+			, #{content}
+			, #{writer}
+			, now()
+			, 0
+			, 'N'
+		)
+	</insert>
+	
+	<update id="updateBoard" parameterType="BoardVO">
+		UPDATE BOARD
+		SET TITLE = #{title}
+			, WRITER = #{writer}
+			, CONTENT = #{content}
+		WHERE
+			BNO = #{bno}
+	</update>
+	
+	<update id="deleteBoard" parameterType="long">
+		UPDATE BOARD
+		SET DELETE_YN = 'Y'
+		WHERE
+			bno = #{bno}
+	</update>
+	
+	<select id="selectBoardTotalCount" parameterType="BoardVO" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			BOARD
+		WHERE
+			DELETE_YN = 'N'
+	</select>
+
+</mapper>

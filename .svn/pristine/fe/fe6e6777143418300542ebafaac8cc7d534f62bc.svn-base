@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<th:block layout:fragment="title">
+	<title>새 글 등록</title>
+</th:block>
+
+<th:block layout:fragment="content">
+   <form th:action="registerBoard" method="post" enctype="multipart/form-data">
+   		<input name="bno" type="hidden" th:value="${board.bno}">
+   		<input name="changeYn" id = "changeYn" type="text" value="N"/>
+		<table th:align="center" th:cellpadding="0" th:cellspacing="0" border="1">				
+			<tr>
+				<td bgcolor="gray" th:text="제목" width="80"></td>
+				<td><input name="title" type="text" size="50" th:value="${board.title}"></td>
+			</tr>
+			<tr>
+				<td bgcolor="gray" th:text="작성자"></td>
+				<td><input name="writer" type="text" size="10" th:value="${board.writer}"></td>
+			</tr>
+			<tr>
+				<td bgcolor="gray" th:text="내용">
+				<td><textarea name="content" cols="50" rows="10" th:text="${board.content}"></textarea></td>
+			</tr>
+		</table>
+		<!--/* 저장된 파일이 없는 파일 영역 */-->
+		<div th:if="${#lists.isEmpty( fileList )}" data-name="fileDiv" class="form-group filebox bs3-primary">
+			<label for="file_0" class="col-sm-2 control-label">파일1</label>
+			<div class="col-sm-10">
+				<input type="text" class="upload-name" value="파일 찾기" readonly />
+				<label for="file_0" class="control-label">찾아보기</label>
+				<input type="file" name="files" id="file_0" class="upload-hidden" onchange="changeFilename(this)" style="display:inline;"/>
+			
+				<button type="button" onclick="addFile()">
+					+
+				</button>
+				<button type="button" onclick="removeFile(this)">
+					-
+				</button>
+			</div>
+		</div>
+		
+		<!--/* 저장된 파일이 있는 파일 영역 */-->
+		<div th:unless="${#lists.isEmpty( fileList )}" th:each="row, status : ${fileList}" data-name="fileDiv" class="form-group filebox bs3-primary">
+			<label th:for="|file_${status.index}|" class="col-sm-2 control-label">[[ |파일${status.count}| ]]</label>
+			<div class="col-sm-10">
+				<input type="hidden" name="fileIdxs" th:value="${row.fno}" />
+				<input type="text" class="upload-name" th:value="${row.originalName}" readonly />
+				<label th:for="|file_${status.index}|" class="control-label">찾아보기</label>
+				<input type="file" name="files" th:id="|file_${status.index}|" class="upload-hidden" onchange="changeFilename(this)" style="display:inline;"/>
+				
+				<button th:if="${status.first}" type="button" onclick="addFile()">
+					+
+				</button>
+				<button type="button" onclick="removeFile(this)">
+					-
+				</button>
+			</div>
+		</div>
+		<div class="btn_wrap text-center" id="btnDiv">
+			<button type="submit">글 등록</button>
+		</div>
+		
+	</form>
+	<div class="btn_wrap text-right">
+		<a th:href="@{/boardList}">글 목록</a>
+	</div>
+</th:block>
+
+</html>

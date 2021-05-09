@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<footer th:fragment="footerFragment">
+
+   <ul class="list-inline">
+		<li>2021 © gaonpf footer</li>
+	</ul>
+
+</footer>
+
+</html>

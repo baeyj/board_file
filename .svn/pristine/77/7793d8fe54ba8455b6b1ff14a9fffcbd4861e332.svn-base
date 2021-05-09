@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaon.mapper.FileMapper">
+
+	<sql id="fileColumns">
+		  FNO
+		, BNO
+		, ORIGINAL_NAME
+		, SAVE_NAME
+		, SIZE
+		, DELETE_YN
+		, TO_CHAR(INSERT_TIME, 'YYYY-MM-DD HH:MI:SS') as INSERT_TIME
+		, TO_CHAR(DELETE_TIME, 'YYYY-MM-DD HH:MI:SS') as DELETE_TIME
+	</sql>
+	
+	<select id="selectFileList" resultType="FileVO">
+			SELECT 
+				<include refid="fileColumns" />
+			FROM BOARD_FILE
+			WHERE DELETE_YN = 'N'
+			AND BNO = #{bno}
+	</select>
+	
+	<select id="selectFileDetail" parameterType="long" resultType="FileVO">
+		SELECT 
+			<include refid="fileColumns" />
+		FROM
+			BOARD_FILE
+		WHERE
+			DELETE_YN = 'N'
+		AND	FNO = #{fno}
+	</select>
+	
+	<insert id="insertFile" parameterType="list">
+		INSERT INTO BOARD_FILE (
+			BNO
+			, ORIGINAL_NAME
+			, SAVE_NAME
+			, SIZE
+			, DELETE_YN
+			, INSERT_TIME
+			, DELETE_TIME
+		) VALUES 
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.bno}
+			, #{item.originalName}
+			, #{item.saveName}
+			, #{item.size}
+			, 'N'
+			, now()
+			, null
+		)
+		</foreach>
+	</insert>
+	
+	<update id="updateFile" parameterType="list">
+		UPDATE BOARD_FILE
+		SET DELETE_YN = 'N'
+		WHERE
+			FNO IN
+			<foreach collection="list" item="item" separator="," open="(" close=")">
+				#{item}
+			</foreach>
+	</update>
+	
+	<update id="deleteFile" parameterType="long">
+		UPDATE BOARD_FILE
+		SET DELETE_YN = 'Y'
+			, DELETE_TIME = NOW()
+		WHERE
+			BNO = #{bno}
+	</update>
+	
+	<select id="selectFileTotalCount" parameterType="long" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			BOARD_FILE
+		WHERE
+			DELETE_YN = 'N'
+		AND
+			BNO = #{bno}
+	</select>
+
+</mapper>

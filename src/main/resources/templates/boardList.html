@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<th:block layout:fragment="title">
+	<title>this is list page</title>
+</th:block>
+	
+<th:block layout:fragment="content">
+   <table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0" th:width="700">
+	<tr>
+		<th bgcolor="grey" width="100">번호</th>
+		<th bgcolor="grey" width="200">제목</th>
+		<th bgcolor="grey" width="150">작성자</th>
+		<th bgcolor="grey" width="150">등록일</th>
+		<th bgcolor="grey" width="100">조회수</th>
+	</tr>
+	 
+	<tr th:each="board, state : ${boardList}">
+		<td th:text="${state.count}">
+		<td><a th:href="@{/getBoard(bno=${board.bno})}" th:text="${board.title}"></a></td>
+		<td th:text="${board.writer}">
+		<td th:text="${board.regdate}">
+		<td th:text="${board.viewcnt}">
+	</tr>
+	
+	</table>
+	<br>
+	<div class="btn_wrap text-right">
+		<a th:href="@{/registerBoard}">새글 등록</a>
+	</div>
+</th:block>
+
+</html>

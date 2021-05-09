@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<th:block layout:fragment="title">
+	<title>새 글 등록</title>
+</th:block>
+	
+<th:block layout:fragment="content">
+   <form th:action="registerBoard" method="post" enctype="multipart/form-data">
+   		<input name="bno" type="hidden" th:value="${board.bno}">
+		<table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0">				
+			<tr>
+				<td bgcolor="grey" th:text="제목" th:width="80"></td>
+				<td th:text="${board.title}" th:width="300"></td>
+			</tr>
+			<tr>
+				<td bgcolor="grey" th:text="작성자"></td>
+				<td th:text="${board.writer}"></td>
+			</tr>
+			<tr>
+				<td bgcolor="grey" th:text="내용">
+				<td th:text="${board.content}" th:height="300"></td>
+			</tr>
+			<tr>
+				<td bgcolor="grey" th:text="등록일"></td>
+				<td th:text="${board.regdate}"></td>
+			</tr>
+			<tr>
+				<td bgcolor="grey" th:text="조회수"></td>
+				<td th:text="${board.viewcnt}"></td>
+			</tr>
+		</table>
+		<div th:if="${not #lists.isEmpty( fileList )}" class="form-group">
+			<label for="inp-type-4" class="col-sm-2 control-label">File</label>
+			<div class="col-sm-10">
+				<div class="file_list">
+					<a th:each="row, status : ${fileList}" th:href="@{/downloadFile(fno=${row.fno} )}" download>
+						<i aria-hidden="true"></i>
+						[[ ${row.originalName} ]]
+					</a>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="btn_wrap text-right">
+		<a th:href="@{/boardList}">글 목록</a>
+		<a th:href="@{/deleteBoard(bno=${board.bno})}">글 삭제</a>
+		<a th:href="@{/registerBoard(bno=${board.bno})}">글 수정</a>
+	</div>
+</th:block>
+
+</html>
